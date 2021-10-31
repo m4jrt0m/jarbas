@@ -1,4 +1,4 @@
-enum class Modes {
+enum class Mode {
     None,
     Note,
     Todo,

@@ -1,26 +1,15 @@
 fun main(args: Array<String>) {
-    var currentDir = "."
-    var currentMode: Modes = Modes.None
+    val input = args.toArgs()
 
-    args.forEachIndexed{ index, it ->
-        if(it.isModes()) {
-            currentMode = it.toModes()
+    if (input.isHelp) {
+        when (input.mode) {
+            Mode.Note -> Help().helpNote(input.folder)
+            Mode.Todo -> Help().helpTodo(input.folder)
+            Mode.None -> Help().help(input.folder)
         }
-
-        if(it == "-f") {
-            currentDir = args[index + 1]
-        }
-
-        if(Help().isHelpNote(it, currentMode)){
-            Help().helpNote(currentDir)
-        }
-
-        if(Help().isHelpTodo(it, currentMode)){
-            Help().helpTodo(currentDir)
-        }
-
-        if(Help().isHelp(it, currentMode)) {
-            Help().help(currentDir)
+    } else {
+        when (input.mode) {
+            Mode.Todo -> Todo().processTodoOperation(input)
         }
     }
 }

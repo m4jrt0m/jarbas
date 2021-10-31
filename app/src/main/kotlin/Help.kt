@@ -14,6 +14,7 @@ class Help {
         println("example:")
         println("jarbas -f ~/Desktop")
     }
+    // Todo :: Add git sync
 
 
     fun helpNote(current_dir: String) {
@@ -23,7 +24,7 @@ class Help {
         println()
         println(" -n add new note")
         println(" -l list notes")
-        println(" -r remove note")
+        println(" -o file name")
     }
 
 
@@ -34,12 +35,12 @@ class Help {
         println()
         println(" -n add new todo")
         println(" -l list todos")
-        println(" -r remove todo")
+        println(" -o file name")
     }
 
-    fun isHelpNote(arg: String, currentMode: Modes): Boolean = arg == "-h" && currentMode == Modes.Note
+    fun isHelpNote(arg: String, currentMode: Mode): Boolean = arg == "-h" && currentMode == Mode.Note
 
-    fun isHelpTodo(arg: String, currentMode: Modes): Boolean = arg == "-h" && currentMode == Modes.Todo
+    fun isHelpTodo(arg: String, currentMode: Mode): Boolean = arg == "-h" && currentMode == Mode.Todo
 
-    fun isHelp(arg: String, currentMode: Modes): Boolean = arg == "-h" && currentMode == Modes.None
+    fun isHelp(arg: String, currentMode: Mode): Boolean = arg == "-h" && currentMode == Mode.None
 }
