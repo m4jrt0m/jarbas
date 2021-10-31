@@ -9,7 +9,9 @@ fun main(args: Array<String>) {
         }
     } else {
         when (input.mode) {
-            Mode.Todo -> Todo().processTodoOperation(input)
+            Mode.Todo   -> Todo().processTodoOperation(input)
+            Mode.Note   -> Note().processNoteOperation(input)
+            else        -> return
         }
     }
 }

@@ -11,12 +11,19 @@ fun String.toModes(): Mode =
         else        -> Mode.None
     }
 
-fun String.isModes(): Boolean =
-    when (this) {
-        "--todo"    -> true
-        "--note"    -> true
-        else        -> false
-    }
+fun Array<String>.noteModeIndex(): Int = this.indexOf("--note")
+
+fun Array<String>.todoModeIndex(): Int = this.indexOf("--todo")
+
+fun Array<String>.folderIndex(): Int = this.indexOf("-f")
+
+fun Array<String>.helpIndex(): Int = this.indexOf("-h")
+
+fun Array<String>.fileNameIndex(): Int = this.indexOf("-o")
+
+fun Array<String>.listIndex(): Int = this.indexOf("-l")
+
+fun Array<String>.newIndex(): Int = this.indexOf("-n")
 
 fun Array<String>.toArgs(): Args {
     var mode = Mode.None
@@ -24,40 +31,44 @@ fun Array<String>.toArgs(): Args {
     var isHelp = false
     var todo = TodoArgs()
     var note = NoteArgs()
+    var fileName = ""
 
-    this.forEachIndexed{ index, it ->
-        if(it.isModes()) {
-            mode = it.toModes()
+    if (this.todoModeIndex() != -1) {
+        mode = this[this.todoModeIndex()].toModes()
+    }
+
+    if (this.noteModeIndex() != -1) {
+        mode = this[this.noteModeIndex()].toModes()
+    }
+
+    if(this.folderIndex() != -1) {
+        folder = this[this.folderIndex() + 1]
+    }
+
+    if(Help().isHelpNote(this.helpIndex(), mode) || Help().isHelpTodo(this.helpIndex(), mode) || Help().isHelp(this.helpIndex(), mode)){
+        isHelp = true
+    }
+
+    if(this.fileNameIndex() != -1 && this.count() >= this.fileNameIndex() + 2) {
+        fileName = this[this.fileNameIndex() + 1]
+    }
+
+    if(mode == Mode.Todo){
+        if(this.newIndex() != -1) {
+            val content = if (this.count() >= this.newIndex() + 2) this[this.newIndex() + 1] else ""
+            todo = TodoArgs(isNew = true, content = content, fileName = fileName)
         }
-        if(it == "-f") {
-            folder = this[index + 1]
+        if(this.listIndex() != -1) {
+            todo = TodoArgs(isList = true)
         }
-        if(Help().isHelpNote(it, mode) || Help().isHelpTodo(it, mode) || Help().isHelp(it, mode)){
-            isHelp = true
+    }
+    if(mode == Mode.Note){
+        if(this.newIndex() != -1) {
+            val content = if (this.count() >= this.newIndex() + 2) this[this.newIndex() + 1] else ""
+            note = NoteArgs(isNew = true, content = content, fileName = fileName)
         }
-        if(mode == Mode.Todo){
-            if(it == "-n") {
-                var fileName = ""
-                if(it == "-o") {
-                    fileName = this[index + 1]
-                }
-                todo = TodoArgs(isNew = true, content = this[index + 1], fileName = fileName)
-            }
-            if(it == "-l") {
-                todo = TodoArgs(isList = true)
-            }
-        }
-        if(mode == Mode.Note){
-            if(it == "-n") {
-                var fileName = ""
-                if(it == "-o") {
-                    fileName = this[index + 1]
-                }
-                note = NoteArgs(isNew = true, content = this[index + 1], fileName = fileName)
-            }
-            if(it == "-l") {
-                note = NoteArgs(isList = true)
-            }
+        if(this.listIndex() != -1) {
+            note = NoteArgs(isList = true)
         }
     }
 
@@ -75,7 +86,7 @@ fun String.sanitizeFileName(): String {
     if (!clone.contains(".md")) {
         clone += ".md"
     }
-    return clone.trim()
+    return clone.trim().replace(" ", "").replace("\\", "").replace("/", "")
 }
 
 fun String.toMd5(): ByteArray = MessageDigest.getInstance("MD5").digest(this.toByteArray(UTF_8))

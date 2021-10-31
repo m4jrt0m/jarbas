@@ -38,9 +38,9 @@ class Help {
         println(" -o file name")
     }
 
-    fun isHelpNote(arg: String, currentMode: Mode): Boolean = arg == "-h" && currentMode == Mode.Note
+    fun isHelpNote(helpIndex: Int, currentMode: Mode): Boolean = helpIndex != -1 && currentMode == Mode.Note
 
-    fun isHelpTodo(arg: String, currentMode: Mode): Boolean = arg == "-h" && currentMode == Mode.Todo
+    fun isHelpTodo(helpIndex: Int, currentMode: Mode): Boolean = helpIndex != -1 && currentMode == Mode.Todo
 
-    fun isHelp(arg: String, currentMode: Mode): Boolean = arg == "-h" && currentMode == Mode.None
+    fun isHelp(helpIndex: Int, currentMode: Mode): Boolean = helpIndex != -1 && currentMode == Mode.None
 }
