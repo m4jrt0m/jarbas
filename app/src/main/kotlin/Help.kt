@@ -15,6 +15,7 @@ class Help {
         println("jarbas -f ~/Desktop")
     }
     // Todo :: Add git sync
+    // Todo :: Add .config file
 
 
     fun helpNote(current_dir: String) {
